@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinPilot | Smart Expense Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="authView" class="auth-shell">
+  <div class="auth-card">
+    <div class="brand-mark">F</div><p class="eyebrow">PERSONAL FINANCE, SIMPLIFIED</p>
+    <h1>Take control of<br><span>your money.</span></h1>
+    <p class="muted">Track spending, build budgets, and make smarter financial decisions.</p>
+    <div class="tabs"><button class="tab active" data-mode="login">Sign in</button><button class="tab" data-mode="register">Create account</button></div>
+    <form id="authForm">
+      <div id="nameWrap" class="field hidden"><label>Full name</label><input id="name" autocomplete="name" placeholder="Alex Morgan"></div>
+      <div class="field"><label>Email address</label><input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters"></div>
+      <button class="primary full" id="authSubmit">Sign in</button><p id="authError" class="error"></p>
+    </form>
+    <small class="muted">Your financial data is private to your account.</small>
+  </div>
+  <div class="auth-art"><div class="art-orb"></div><div class="art-copy"><span>YOUR FINANCIAL OVERVIEW</span><strong>Clarity today.<br>Confidence tomorrow.</strong><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+</div>
+<div id="appView" class="app-shell hidden">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark small">F</div><span>finpilot</span></div>
+    <p class="nav-label">WORKSPACE</p>
+    <button class="nav-item active" data-page="overview">◫ <span>Overview</span></button>
+    <button class="nav-item" data-page="transactions">⇄ <span>Transactions</span></button>
+    <button class="nav-item" data-page="budgets">▤ <span>Budgets</span></button>
+    <button class="nav-item" data-page="reports">▥ <span>Reports & insights</span></button>
+    <div class="sidebar-bottom"><div class="profile"><div class="avatar" id="avatar">U</div><div><strong id="userName">User</strong><small>Personal account</small></div></div><button id="logout" class="logout">↪ Sign out</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><p class="eyebrow">FINANCIAL OVERVIEW</p><h2 id="pageTitle">Good to see you</h2></div><div class="top-actions"><input type="month" id="monthPicker"><button class="primary" id="quickAdd">＋ Add transaction</button></div></header>
+    <section id="overviewPage" class="page">
+      <div class="metric-grid">
+        <article class="metric dark"><div class="metric-top"><span>Total balance</span><span class="metric-icon">↗</span></div><strong id="balance">₹0.00</strong><small>Net position this month</small></article>
+        <article class="metric"><div class="metric-top"><span>Total income</span><span class="metric-icon green">↙</span></div><strong id="income">₹0.00</strong><small class="positive">Money received this month</small></article>
+        <article class="metric"><div class="metric-top"><span>Total expenses</span><span class="metric-icon orange">↗</span></div><strong id="expenses">₹0.00</strong><small class="muted">Money spent this month</small></article>
+        <article class="metric"><div class="metric-top"><span>Transactions</span><span class="metric-icon blue">≋</span></div><strong id="txCount">0</strong><small class="muted">Activity this month</small></article>
+      </div>
+      <div class="content-grid">
+        <article class="panel wide"><div class="panel-head"><div><h3>Cash flow</h3><p>Income vs expenses over time</p></div><span class="pill">Last 6 months</span></div><canvas id="trendChart" height="115"></canvas></article>
+        <article class="panel"><div class="panel-head"><div><h3>Spending breakdown</h3><p>By expense category</p></div></div><div class="donut-wrap"><canvas id="categoryChart"></canvas></div><div id="categoryLegend" class="legend"></div></article>
+      </div>
+      <article class="panel"><div class="panel-head"><div><h3>Recent transactions</h3><p>Your latest financial activity</p></div><button class="text-btn" data-goto="transactions">View all →</button></div><div class="table-wrap"><table><thead><tr><th>DESCRIPTION</th><th>CATEGORY</th><th>DATE</th><th>AMOUNT</th></tr></thead><tbody id="recentRows"></tbody></table></div></article>
+    </section>
+    <section id="transactionsPage" class="page hidden"><article class="panel"><div class="panel-head"><div><h3>All transactions</h3><p>Search, filter and manage your activity</p></div><button class="primary" id="addTx">＋ Add transaction</button></div><div class="filters"><input id="txSearch" placeholder="Search description…"><select id="txKind"><option value="">All types</option><option value="income">Income</option><option value="expense">Expense</option></select><button class="secondary" id="exportCsv">Export CSV</button></div><div class="table-wrap"><table><thead><tr><th>DESCRIPTION</th><th>TYPE</th><th>CATEGORY</th><th>DATE</th><th>AMOUNT</th><th></th></tr></thead><tbody id="allRows"></tbody></table></div></article></section>
+    <section id="budgetsPage" class="page hidden"><div class="budget-top"><article class="panel"><div class="panel-head"><div><h3>Create a budget</h3><p>Set a monthly spending limit</p></div></div><form id="budgetForm" class="inline-form"><div class="field"><label>Budget name</label><input id="budgetName" required placeholder="Monthly groceries"></div><div class="field"><label>Category</label><select id="budgetCategory"></select></div><div class="field"><label>Monthly limit (₹)</label><input id="budgetLimit" type="number" min="1" step=".01" required placeholder="10000"></div><button class="primary">Create budget</button></form></article></div><div id="budgetList" class="budget-grid"></div></section>
+    <section id="reportsPage" class="page hidden"><div class="report-grid"><article class="panel"><h3>Expense forecast</h3><p class="muted">Three-month moving-average estimate</p><strong class="forecast-value" id="forecastValue">₹0.00</strong><p class="muted" id="forecastNote">Based on recent expense history.</p></article><article class="panel"><h3>Monthly report</h3><p class="muted">Download a PDF statement for the selected month.</p><button class="primary" id="downloadPdf">↓ Download PDF report</button></article><article class="panel"><h3>Recurring transactions</h3><p class="muted">Generate this month's entries from recurring templates. Safe to run more than once.</p><button class="secondary" id="generateRecurring">Generate this month</button><p id="recurringResult" class="muted"></p></article></div></section>
+  </main>
+</div>
+<div id="txModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><p class="eyebrow">TRANSACTION DETAILS</p><h3 id="modalTitle">Add transaction</h3></div><button class="icon-btn" id="closeModal">×</button></div><form id="txForm"><input type="hidden" id="txId"><div class="field"><label>Transaction type</label><div class="segmented"><button type="button" class="selected" data-kind="expense">Expense</button><button type="button" data-kind="income">Income</button></div><input type="hidden" id="txType" value="expense"></div><div class="field"><label>Description</label><input id="txDescription" required maxlength="250" placeholder="e.g. Weekly groceries"></div><div class="form-row"><div class="field"><label>Amount (₹)</label><input id="txAmount" type="number" min=".01" step=".01" required></div><div class="field"><label>Date</label><input id="txDate" type="date" required></div></div><div class="field"><label>Category</label><select id="txCategory"></select></div><label class="check"><input id="txRecurring" type="checkbox"> Repeat monthly</label><div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancel</button><button class="primary">Save transaction</button></div><p id="txError" class="error"></p></form></div></div>
+<div id="toast" class="toast"></div>
+<script src="/app.js"></script>
+</body></html>
